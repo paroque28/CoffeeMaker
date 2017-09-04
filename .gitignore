@@ -35,6 +35,8 @@ pepExtractor.prj
 impact.xsl
 impact_impact.xwbt
 *.xise
+*.gise
+
 #ignore OS noise
 
 Thumbs.db
