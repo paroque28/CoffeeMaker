@@ -37,6 +37,27 @@ impact_impact.xwbt
 *.xise
 *.orig
 *.gise
+*.map
+*.ut
+*.xpi
+*.xst
+*.xwbt
+*.xrpt
+*.csv
+*.xml
+*.prj
+*.twr
+*.bit
+*.bld
+*.pcf
+*.bgn
+*.drc
+*.ngc
+*.mrp
+*.ngd
+*.ngm
+*.pad
+*.par
 
 #ignore OS noise
 
