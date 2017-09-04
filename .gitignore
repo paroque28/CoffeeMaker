@@ -64,6 +64,9 @@ impact_impact.xwbt
 *.twx
 *.unroutes
 *.txt
+*.xbcd
+*.projectmgr
+*.lst
 #ignore OS noise
 
 Thumbs.db
