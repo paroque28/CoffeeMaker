@@ -1,0 +1,23 @@
+xst -intstyle ise -ifn "C:/Users/ravargas/CoffeeMaker/testdivisor.xst" -ofn "C:/Users/ravargas/CoffeeMaker/testdivisor.syr" 
+xst -intstyle ise -ifn "C:/Users/ravargas/CoffeeMaker/testdivisor.xst" -ofn "C:/Users/ravargas/CoffeeMaker/testdivisor.syr" 
+xst -intstyle ise -ifn "C:/Users/ravargas/CoffeeMaker/testdivisor.xst" -ofn "C:/Users/ravargas/CoffeeMaker/testdivisor.syr" 
+xst -intstyle ise -ifn "C:/Users/ravargas/CoffeeMaker/testdivisor.xst" -ofn "C:/Users/ravargas/CoffeeMaker/testdivisor.syr" 
+xst -intstyle ise -ifn "C:/Users/ravargas/CoffeeMaker/testdivisor.xst" -ofn "C:/Users/ravargas/CoffeeMaker/testdivisor.syr" 
+xst -intstyle ise -ifn "C:/Users/ravargas/CoffeeMaker/testdivisor.xst" -ofn "C:/Users/ravargas/CoffeeMaker/testdivisor.syr" 
+xst -intstyle ise -ifn "C:/Users/ravargas/CoffeeMaker/testdivisor.xst" -ofn "C:/Users/ravargas/CoffeeMaker/testdivisor.syr" 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc Nexys3.ucf -p xc6slx16-csg324-3 testdivisor.ngc testdivisor.ngd  
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc Nexys3.ucf -p xc6slx16-csg324-3 testdivisor.ngc testdivisor.ngd  
+map -intstyle ise -p xc6slx16-csg324-3 -w -logic_opt off -ol high -t 1 -xt 0 -register_duplication off -r 4 -global_opt off -mt off -ir off -pr off -lc off -power off -o testdivisor_map.ncd testdivisor.ngd testdivisor.pcf 
+par -w -intstyle ise -ol high -mt off testdivisor_map.ncd testdivisor.ncd testdivisor.pcf 
+trce -intstyle ise -v 3 -s 3 -n 3 -fastpaths -xml testdivisor.twx testdivisor.ncd -o testdivisor.twr testdivisor.pcf -ucf Nexys3.ucf 
+xst -intstyle ise -ifn "C:/Users/ravargas/CoffeeMaker/testdivisor.xst" -ofn "C:/Users/ravargas/CoffeeMaker/testdivisor.syr" 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc Nexys3.ucf -p xc6slx16-csg324-3 testdivisor.ngc testdivisor.ngd  
+map -intstyle ise -p xc6slx16-csg324-3 -w -logic_opt off -ol high -t 1 -xt 0 -register_duplication off -r 4 -global_opt off -mt off -ir off -pr off -lc off -power off -o testdivisor_map.ncd testdivisor.ngd testdivisor.pcf 
+par -w -intstyle ise -ol high -mt off testdivisor_map.ncd testdivisor.ncd testdivisor.pcf 
+trce -intstyle ise -v 3 -s 3 -n 3 -fastpaths -xml testdivisor.twx testdivisor.ncd -o testdivisor.twr testdivisor.pcf -ucf Nexys3.ucf 
+bitgen -intstyle ise -f testdivisor.ut testdivisor.ncd 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc Nexys3.ucf -p xc6slx16-csg324-3 testdivisor.ngc testdivisor.ngd  
+map -intstyle ise -p xc6slx16-csg324-3 -w -logic_opt off -ol high -t 1 -xt 0 -register_duplication off -r 4 -global_opt off -mt off -ir off -pr off -lc off -power off -o testdivisor_map.ncd testdivisor.ngd testdivisor.pcf 
+par -w -intstyle ise -ol high -mt off testdivisor_map.ncd testdivisor.ncd testdivisor.pcf 
+trce -intstyle ise -v 3 -s 3 -n 3 -fastpaths -xml testdivisor.twx testdivisor.ncd -o testdivisor.twr testdivisor.pcf -ucf Nexys3.ucf 
+bitgen -intstyle ise -f testdivisor.ut testdivisor.ncd 
