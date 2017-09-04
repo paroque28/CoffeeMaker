@@ -35,6 +35,7 @@ pepExtractor.prj
 impact.xsl
 impact_impact.xwbt
 *.xise
+*.orig
 *.gise
 
 #ignore OS noise
