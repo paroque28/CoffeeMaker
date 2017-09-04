@@ -1,8 +1,0 @@
-Release 14.4 Drc P.49d (nt)
-Copyright (c) 1995-2012 Xilinx, Inc.  All rights reserved.
-
-Mon Sep 04 15:28:08 2017
-
-drc -z testdivisor.ncd testdivisor.pcf
-
-DRC detected 0 errors and 0 warnings.

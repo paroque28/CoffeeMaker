@@ -1,8 +1,0 @@
-INTSTYLE=ise
-INFILE=C:\Users\ravargas\CoffeeMaker\testdivisor.ncd
-OUTFILE=C:\Users\ravargas\CoffeeMaker\testdivisor.bit
-FAMILY=Spartan6
-PART=xc6slx16-3csg324
-WORKINGDIR=C:\Users\ravargas\CoffeeMaker
-LICENSE=ISE
-USER_INFO=174495529_208276604_210625683_703
