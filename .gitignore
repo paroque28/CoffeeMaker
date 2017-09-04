@@ -58,7 +58,12 @@ impact_impact.xwbt
 *.ngm
 *.pad
 *.par
-
+*.ngr
+*.ptwx
+*.syr
+*.twx
+*.unroutes
+*.txt
 #ignore OS noise
 
 Thumbs.db
