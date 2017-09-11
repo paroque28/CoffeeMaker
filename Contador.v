@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date:    14:50:37 09/04/2017 
+// Create Date:    08:25:39 09/11/2017 
 // Design Name: 
-// Module Name:    DebouncerTest 
+// Module Name:    Contador 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,24 +18,20 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module DebouncerTest(
+module Contador(
 	 input clk,
-    input btnp,
-    output [7:3] led
+    input one,
+    input five,
+    input reset,
+    output reg [3:0] total
     );
 	 
-	wire out;
-	assign led[7] = out;
-	assign led[6] = out;
-	assign led[5] = btnp;
-	Debouncer reset(
-			.clk(clk),
-			.signal(btnp),
-			.signal_state(out),
-			.signal_down(led[4]),
-			.signal_up(led[3])
-	);
-	
-	
+	always @(posedge clk)
+		if (reset) total <= 0 ;
+		else 
+		begin
+			if (one) total <= total + 1;
+			if (five) total <= total + 5;
+		end
 
 endmodule
