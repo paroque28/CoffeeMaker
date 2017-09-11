@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 10s / 1s
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -25,11 +25,11 @@ module clock_divisor(
 	 
 
  reg[28:0] contador = 0; 
-
+	initial clk_1Hz = 0 ;
  always @(posedge clk_100MHz)
   begin
    contador = contador + 1; 
-   if(contador == 100000000)
+   if(contador == 50000000)
     begin
       contador = 0;
       clk_1Hz = ~clk_1Hz; 
