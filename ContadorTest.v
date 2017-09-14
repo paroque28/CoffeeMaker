@@ -23,27 +23,32 @@ module ContadorTest(
     input btnl,
 	 input btnd,
 	 input btnr,
-	 input btnp,
-    output [7:3] led
+    output [7:3] led,
+	 output [6:0] seg,
+	 output [3:0] an
     );
 	 
-	wire [3:0] out;
+	wire [3:0] total;
 	wire test;
-	assign led[7] = out[0];
-	assign led[6] = out[1];
-	assign led[5] = out[2];
-	assign led[4] = out[3];
-	assign led[3] = test;
 	wire cancel_wire; 
 	wire hundred_wire; 
 	wire five_hundred_wire;
 	
+	
+	
+	
+	seven_segment seven_seg(
+			.clk(clk),
+			.in(total),
+			.seg(seg),
+			.an(an)
+	);
 	Contador monedero(
 			.clk(clk),
 			.one(hundred_wire),
 			.five(five_hundred_wire),
 			.reset(cancel_wire),
-			.total(out)
+			.total(total)
 	);
 	Debouncer cancel(
 			.clk(clk),
@@ -59,11 +64,6 @@ module ContadorTest(
 			.clk(clk),
 			.signal(btnr),
 			.signal_up(five_hundred_wire)
-	);
-	Debouncer reset(
-			.clk(clk),
-			.signal(btnp),
-			.signal_state(test)
 	);
 	
 
