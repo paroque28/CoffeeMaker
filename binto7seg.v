@@ -23,7 +23,7 @@ module binto7seg(
     input  [3:0] binary,
     output reg [6:0] seg
     );
-always @(clk)
+always @(posedge clk)
 case (binary)
 4'b0000 :      //Hexadecimal 0
 seg = 7'b1000000;

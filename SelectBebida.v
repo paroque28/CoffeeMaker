@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date:    15:19:54 09/11/2017 
+// Create Date:    14:00:15 09/14/2017 
 // Design Name: 
-// Module Name:    deco 
+// Module Name:    SelectBebida 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,20 +18,21 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module deco(
+module SelectBebida(
 	 input clk,
-    input [1:0] in,
-    output reg [3:0] out
+    input [3:0] switches,
+    output reg [2:0] c_type
     );
 
-always@(posedge clk)
+always @(posedge clk)
 begin
-	case (in)
-	  2'b00 : out <= 4'b1110;
-	  2'b01 : out <= 4'b1101;
-	  2'b10 : out <= 4'b1011;
-	  2'b11 : out <= 4'b0111;
-	  default : out <= 0;
+	case (switches)
+			4'b0000 : c_type = 3'b000;
+			4'b0001 : c_type = 3'b001;
+			4'b0010 : c_type = 3'b010;
+			4'b0100 : c_type = 3'b011;
+			4'b1000 : c_type = 3'b100;
+			default : c_type = 3'b000;
 	endcase
 end
 endmodule

@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date:    15:19:54 09/11/2017 
+// Create Date:    15:44:57 09/14/2017 
 // Design Name: 
-// Module Name:    deco 
+// Module Name:    FSM 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,20 +18,8 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module deco(
-	 input clk,
-    input [1:0] in,
-    output reg [3:0] out
+module FSM(
     );
 
-always@(posedge clk)
-begin
-	case (in)
-	  2'b00 : out <= 4'b1110;
-	  2'b01 : out <= 4'b1101;
-	  2'b10 : out <= 4'b1011;
-	  2'b11 : out <= 4'b0111;
-	  default : out <= 0;
-	endcase
-end
+
 endmodule

@@ -33,7 +33,7 @@ reg signal_sync_0;  always @(posedge clk) signal_sync_0 <= signal;
 reg signal_sync_1;  always @(posedge clk) signal_sync_1 <= signal_sync_0;
 
 // Next declare a 18-bits counter
-reg [18:0] signal_cnt;
+reg [19:0] signal_cnt;
 
 // When the push-button is pushed or released, we increment the counter
 // The counter has to be maxed out before we decide that the push-button state has changed
