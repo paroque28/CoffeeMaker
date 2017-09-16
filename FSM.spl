@@ -1,0 +1,13 @@
+[Inputs]
+clk
+comparador_de_precio_ok
+t_expired
+=c_type[1:0]=
+[Outputs]
+start_timer
+=ing_type[2:0]=
+=led[7:3]=
+[BiDir]
+[ATTRIBUTES]
+VeriModel FSM
+
