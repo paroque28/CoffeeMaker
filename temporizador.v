@@ -21,30 +21,100 @@
 module temporizador(
 	 input clk_100MHz,
     input[1:0]    value,
-    output reg  texpired, 
-	 input   start_timer
+	 input   start_timer,
+    output reg  t_expired, 
+	 output reg on	 
     );
 wire divisor;
+reg[1:0] counter = 0;
+reg counting = 0;
+reg add_one = 0;
+reg add_one_last = 0;
+reg reset = 0;
+reg reset_last = 0;
+
 clock_divisor clk_1Hz(
 	.clk_100MHz(clk_100MHz),
-	.clk_1Hz(divisor)
+	.clk_1Hz(divisor),
+	.on(on)
  );
- reg[1:0] contador = 0; 
+
+
  
-always @(posedge divisor)
+always @(posedge clk_100MHz)
 begin
-  if(start_timer)
-  begin
-		contador = contador + 1; 
-		if(contador == value)
+
+	if(start_timer)
+	begin
+		if(counting)
 		begin
-			contador = 0;
-			texpired<=1;
+			
+			if(add_one_last != add_one)
+			begin
+				counter = counter + 1;
+				add_one_last = add_one;
+			end
+			else
+			begin
+				counter = counter;
+				add_one_last = add_one;
+			end
+			
+			if(counter >= value)
+			begin
+				t_expired = 1;
+				counting = 0;
+				on = 0;
+			end
+			
+			else
+			begin
+				//t_expired = 0;
+			end
+		end
+		else
+		begin
+			counting = 1;
+			on = 1;
+			counter = 0;
 		end
 	end
 	else
 	begin
-	texpired <=0;
+		
 	end
+	
+	
+	
+	if(reset_last!=reset)
+	begin
+		t_expired = 0;
+		on = 0;
+		counting = 0;
+		counter = 0;
+		reset_last = reset;
+	end
+	else
+	begin
+		t_expired = t_expired;
+		reset_last = reset;
+	end
+	
 end
+
+
+always @(posedge divisor)
+begin
+	if(start_timer)
+	begin
+		add_one = ~ add_one;
+	end
+
+end
+
+always @(negedge start_timer)
+begin
+	reset = ~reset;
+end
+
 endmodule
