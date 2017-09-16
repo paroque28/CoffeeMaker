@@ -37,7 +37,7 @@ begin
 			clk_1Hz = ~clk_1Hz; 
 		end
 		else
-			contador = contador + 1; 
+			contador = contador + 1 ; 
 	end
 	else
 	begin

@@ -52,7 +52,7 @@ begin
 			if(add_one_last != add_one)
 			begin
 				counter = counter + 1;
-				add_one_last = add_one;
+				add_one_last = add_one ;
 			end
 			else
 			begin
