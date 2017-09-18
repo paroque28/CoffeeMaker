@@ -23,98 +23,88 @@ module temporizador(
     input[1:0]    value,
 	 input   start_timer,
     output reg  t_expired, 
-	 output reg on	 
+	 output reg reset
     );
-wire divisor;
+	 
+
 reg[1:0] counter = 0;
 reg counting = 0;
 reg add_one = 0;
 reg add_one_last = 0;
-reg reset = 0;
-reg reset_last = 0;
 
-clock_divisor clk_1Hz(
+
+initial
+begin
+	counter = 0;
+	counting = 0;
+	add_one = 0;
+	add_one_last = 0;
+end
+
+clock_divisor clk_dev(
 	.clk_100MHz(clk_100MHz),
-	.clk_1Hz(divisor),
-	.on(on)
+	.clk_1Hz(clk_1Hz),
+	.reset(reset)
  );
 
 
  
 always @(posedge clk_100MHz)
 begin
-
-	if(start_timer)
+	
+	if(counting)
 	begin
-		if(counting)
+	
+		if(add_one_last != add_one)
 		begin
-			
-			if(add_one_last != add_one)
-			begin
-				counter = counter + 1;
-				add_one_last = add_one ;
-			end
-			else
-			begin
-				counter = counter;
-				add_one_last = add_one;
-			end
-			
-			if(counter >= value)
-			begin
-				t_expired = 1;
-				counting = 0;
-				on = 0;
-			end
-			
-			else
-			begin
-				//t_expired = 0;
-			end
+			add_one_last = add_one;
+			counter = counter + 1;
 		end
 		else
 		begin
+			counter = counter;
+		end
+		
+		if(counter >= value)
+		begin
+			t_expired = 1;
+			counting = 0;
+			reset = 0;
+			add_one_last = add_one;
+		end
+		else
+		begin
+			reset = 1;
 			counting = 1;
-			on = 1;
+			t_expired = 0;
+		end
+	
+	end
+	else
+	begin
+		add_one_last = add_one;
+		t_expired = 0;
+		if(start_timer)
+		begin
+			counting = 1;
+			reset = 1;
 			counter = 0;
 		end
-	end
-	else
-	begin
-		
-	end
-	
-	
-	
-	if(reset_last!=reset)
-	begin
-		t_expired = 0;
-		on = 0;
-		counting = 0;
-		counter = 0;
-		reset_last = reset;
-	end
-	else
-	begin
-		t_expired = t_expired;
-		reset_last = reset;
-	end
-	
+		else
+		begin
+			counting =0;
+			reset = 0;
+			counter = 0;	
+		end
+	end	
 end
 
 
-always @(posedge divisor)
+always @(posedge clk_1Hz)
 begin
-	if(start_timer)
-	begin
 		add_one = ~ add_one;
-	end
-
+		
 end
 
-always @(negedge start_timer)
-begin
-	reset = ~reset;
-end
 
 endmodule

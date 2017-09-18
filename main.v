@@ -25,7 +25,7 @@ module main(
 	 input btnr,
 	 input btnp,
 	 input [3:0] speed,
-    output [7:2] led,
+    output [7:0] led,
 	 output [6:0] seg,
 	 output [3:0] an
     );
@@ -36,10 +36,13 @@ wire [3:0] total;
 wire [3:0] cambio;
 reg [3:0] display;
 wire reset_wire; 
+wire reset_contador_wire;
+wire cobrar_wire;
 wire cancel_wire; 
 wire hundred_wire; 
 wire five_hundred_wire;
 wire [2:0] c_type;
+wire [2:0] c_type_saved;
 wire t_expired;
 wire [2:0] ing_type;
 wire [1:0] t_value;
@@ -91,7 +94,6 @@ Debouncer five_hundred_coin(
 
 //LOGIC
 SelectBebida selector(
-	.clk(clk),
 	.switches(bebida),
 	.c_type(c_type)
 );
@@ -108,12 +110,12 @@ Comparador comparador (
 	.cambio(cambio),
 	.ok(ok)
 );
-
+assign reset_contador_wire = cancel_wire||cobrar_wire;
 Contador monedero(
 		.clk(clk),
 		.one(hundred_wire),
 		.five(five_hundred_wire),
-		.reset(cancel_wire),
+		.reset(reset_contador_wire),
 		.total(total)
 );
 
@@ -123,32 +125,33 @@ temporizador temp(
 	.value(t_value),
 	.start_timer(start_timer),
 	.t_expired(t_expired),	
-	.on(on_temp)
+	.reset(on_temp)
 );
 
 
 clock_divisor clk_1Hz(
 	.clk_100MHz(clk),
 	.clk_1Hz(led[2]),
-	.on(on_temp)
+	.reset(on_temp)
  );
  
 TimeSelector time_select(
-	.clk(clk),
-	.c_type(c_type),
+	.c_type(c_type_saved),
 	.ing_type(ing_type),
 	.t_value(t_value)
  );
 
-
 FSM fsm(
 		.clk(clk),
 		.ok(ok),
+		.c_type(c_type),
 		.t_expired(t_expired),
 		.reset(reset_wire),
 		.ing_type(ing_type),
 		.start_timer(start_timer),
-		.ingredientes(led[7:3])
+		.ingredientes(led[7:3]),
+		.cobrar(cobrar_wire),
+		.c_type_saved(c_type_saved)
     );
 	
 

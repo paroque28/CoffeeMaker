@@ -19,157 +19,195 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module FSM(
-    input wire clk,
-    input wire ok,
-    input wire [1:0]  c_type,
-    input wire t_expired,
-	 input wire reset,
+    input clk,
+    input ok,
+    input t_expired,
+	 input reset,
+	 input [2:0] c_type,
     output reg [2:0]ing_type,
 	 output reg start_timer,
-	 output reg[7:3] ingredientes
+	 output reg[7:3] ingredientes,
+	 output reg expired,
+	 output reg cobrar,
+	 output reg [2:0] c_type_saved
     );
 
 	
   //-------------Internal Constants--------------------------
-  parameter SIZE = 4;
-  parameter INICIO  = 4'b0000,AGUA = 4'b0010,CAFE = 4'b0100, MILK  = 4'b0111,CHOCO = 4'b1001,AZUC = 4'b1011 ;
-  parameter LAGUA = 4'b0001,LCAFE = 4'b0011, LMILK  = 4'b0101,LCHOCO = 4'b1000,LAZUC = 4'b1010 ;
+  parameter INICIO  = 4'b0000,AGUA = 4'b0010,CAFE = 4'b0100, MILK  = 4'b0110,CHOCO = 4'b1000,AZUC = 4'b1010, COBRAR_WAIT = 4'b1111;
+  parameter LAGUA = 4'b0001,LCAFE = 4'b0011, LMILK  = 4'b0101,LCHOCO = 4'b0111,LAZUC = 4'b1001, COBRAR = 4'b1011;
   //-------------Internal Variables---------------------------
-  reg   [SIZE-1:0]          state        ;// Seq part of the FSM
-  wire  [SIZE-1:0]          next_state   ;// combo part of FSM
-  //----------Code startes Here------------------------
-  assign next_state = fsm_function(state,c_type,ok,reset);
-  //----------Function for Combo Logic-----------------
-  function [SIZE-1:0] fsm_function;
-  input  [SIZE-1:0]  state ;	
-  input    c_type ;
-  input ok;
-  input reset;
-  
-	  case(state)
-		  INICIO : if (ok == 1'b1)
-						  begin
-						  fsm_function = LAGUA;
-						  end 
-					  else 
-						  begin
-						  fsm_function = INICIO;
-						  end
-						  
-		  LAGUA : fsm_function = AGUA;
-		  AGUA : fsm_function = LCAFE;
-						
-		  LCAFE: fsm_function = CAFE;
-		  CAFE :if (c_type == 2'b00)
-						  begin
-						  fsm_function = LAZUC;
-						  end 
-					  else 
-						  begin
-						  fsm_function = LMILK;
-						  end
-						  
-		  LMILK: fsm_function = MILK;			  
-		  MILK :if (c_type == 2'b11)
-						  begin
-						  fsm_function = LCHOCO;
-						  end 
-					  else 
-						  begin
-						  fsm_function = LAZUC;
-						  end
-						  
-		  LCHOCO : fsm_function = CHOCO;
-		  CHOCO : fsm_function = LAZUC;
-				
-		  LAZUC: fsm_function = AZUC;
-		  AZUC : fsm_function = INICIO;
-		  
-		  default : fsm_function = INICIO;
-		 endcase
-  endfunction
+  reg   [3:0] state = 0;
+  reg expired_last = 0;
+  //----------Code startes Here-----------------------
+  //---------------------Initial-----------------------
+  initial begin
+	ingredientes = 5'b00000;
+	start_timer = 0;
+	ing_type = 0;
+	expired = 0;
+	cobrar = 0;
+	c_type_saved = 0;
+  end
 //----------Seq Logic-----------------------------
-always @ (posedge clk)
+always @ (posedge clk or posedge reset)
 begin  
 if(reset == 1'b1)
 begin
-	state <=  INICIO;
+	state =  INICIO;
 end
 else begin	
-	state <=   next_state;
+	case(state)
+		  INICIO : if (ok == 1'b1)
+					  begin
+						  state = LAGUA;
+						  c_type_saved = c_type;
+					  end
+					  else 
+						  state = INICIO;
+						  
+		  LAGUA : state = AGUA;
+		  AGUA : if (t_expired) begin
+						  state = LCAFE; end
+					  else 
+						  state = AGUA;
+						
+		  LCAFE: state = CAFE;
+		  CAFE :if (t_expired)begin
+
+						  state = LMILK; end
+					  else 
+						  state = CAFE;
+						  
+		  LMILK: state = MILK;			  
+		  MILK :if (t_expired) begin
+						  state = LCHOCO; end
+					  else 
+						  state = MILK;
+						  
+		  LCHOCO : state = CHOCO;
+		  CHOCO : if (t_expired) begin
+						  state = LAZUC; end
+					  else 
+						  state = CHOCO;
+				
+		  LAZUC: state = AZUC;
+		  AZUC : if (t_expired) begin
+						  
+						  state = COBRAR; end
+					  else 
+						  state = AZUC;
+		  COBRAR: begin
+					c_type_saved = 0;
+					state = COBRAR_WAIT;
+					end
+		  COBRAR_WAIT: begin
+					c_type_saved = 0;
+					state = INICIO;
+					end
+		  
+		  default : state = INICIO;
+		 endcase
  end
 end
   
   //----------Output Logic-----------------------------
-  always @ (posedge clk)
-	if(reset == 1'b1)
-	begin
-		 ing_type <=  4'b0000;
-		 start_timer <=  1'b0;
-		 ingredientes <=  5'b00000;
-		end
-	else
-	begin
-    case(state)
-      INICIO : begin         
-					ingredientes <=  5'b00000;
+always @(state) 
+     begin
+	  case(state)
+      INICIO : begin
+			ing_type =  3'b000;
+			start_timer =  1'b0;
+			ingredientes =  5'b00000;
+			cobrar = 0;
                end
 		LAGUA : begin
-             ing_type <=  3'b000;
-	          start_timer <=  1'b0;
-	          ingredientes <=  5'b10000;
+			 ing_type =  3'b001;
+			 start_timer =  1'b0;
+			 ingredientes =  5'b10000;
+			 cobrar = 0;
              end
       AGUA : begin
-             ing_type <=  3'b000;
-	          start_timer <=  1'b1;
-	          ingredientes <=  5'b10000;
+			 ing_type =  3'b001;
+			 start_timer =  1'b1;
+			 ingredientes =  5'b10000;
+			 cobrar = 0;
              end
 		LCAFE : begin
-             ing_type <=  3'b001;
-	          start_timer <=  1'b0;
-	          ingredientes <=  5'b01000;
+             ing_type =  3'b010;
+	          start_timer =  1'b0;
+	          ingredientes =  5'b01000;
+		       cobrar = 0;
              end
       CAFE : begin
-             ing_type <=  3'b001;
-	          start_timer <=  1'b1;
-	          ingredientes <=  5'b01000;
+             ing_type =  3'b010;
+	          start_timer =  1'b1;
+	          ingredientes =  5'b01000;
+			    cobrar = 0;
              end
 		LMILK: begin
-             ing_type <=  3'b010;
-	          start_timer <=  1'b0;
-	          ingredientes <=  5'b00100;
+             ing_type =  3'b011;
+	          start_timer =  1'b0;
+	          ingredientes =  5'b00100;
+			    cobrar = 0;
              end		 
 	   MILK: begin
-             ing_type <=  3'b010;
-	          start_timer <=  1'b1;
-	          ingredientes <=  5'b00100;
+             ing_type =  3'b011;
+	          start_timer =  1'b1;
+	          ingredientes =  5'b00100;
+			    cobrar = 0;
              end
 		LCHOCO : begin
-				ing_type <=  3'b011;
-				start_timer <=  1'b0;
-				ingredientes <=  5'b00010;
+				ing_type =  3'b100;
+				start_timer =  1'b0;
+				ingredientes =  5'b00010;
+			   cobrar = 0;
 				end
       CHOCO : begin
-				ing_type <=  3'b011;
-				start_timer <=  1'b1;
-				ingredientes <=  5'b00010;
+				ing_type =  3'b100;
+				start_timer =  1'b1;
+				ingredientes =  5'b00010;
+			   cobrar = 0;
 				end
 		LAZUC : begin
-			ing_type <=  3'b100;
-			start_timer<=  1'b0;
-			ingredientes<=  5'b00001;
+			ing_type =  3'b101;
+			start_timer=  1'b0;
+			ingredientes=  5'b00001;
+			cobrar = 0;
 			end
       AZUC : begin
-			ing_type <=  3'b100;
-			start_timer<=  1'b1;
-			ingredientes<=  5'b00001;
+			ing_type =  3'b101;
+			start_timer=  1'b1;
+			ingredientes=  5'b00001;
+			cobrar = 0;
+			end
+		COBRAR : begin
+			ing_type =  3'b000;
+			start_timer=  1'b0;
+			ingredientes=  5'b00000;
+			cobrar = 1;
+			end
+		COBRAR_WAIT : begin
+			ing_type =  3'b000;
+			start_timer=  1'b0;
+			ingredientes=  5'b00000;
+			cobrar = 0;
 			end
 	  
+	  
      default : begin
-					ing_type <=  3'b000;
-					start_timer<=  1'b0;
-               ingredientes <=  5'b00000;
+					ing_type =  3'b000;
+					start_timer=  1'b0;
+               ingredientes =  5'b00000;
+					cobrar = 0;
                end
     endcase
    end
+ 
+ always@(posedge t_expired)
+ begin
+		expired = ~expired;
+		
+ end
+ 
  endmodule // End of Module arbiter

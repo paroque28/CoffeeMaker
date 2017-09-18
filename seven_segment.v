@@ -29,7 +29,7 @@ reg [16:0] contador = 0;
 reg [1:0] an_select = 0;
 reg [3:0] x = 0;
 reg [3:0] unidades = 0;
-reg [1:0] decenas = 0;
+reg decenas = 0;
 
 binto7seg toseg (
 		.clk(clk),

@@ -26,7 +26,7 @@ module FSMTest(
 	 input btnp,
 	 input btnu,
 	 input [3:0] speed,
-    output [7:2] led,
+    output [7:0] led,
 	 output [6:0] seg,
 	 output [3:0] an
     );
@@ -38,9 +38,12 @@ wire reset_wire;
 wire cancel_wire; 
 wire hundred_wire; 
 wire five_hundred_wire;
-wire expired;
 wire ok;
 wire [2:0] c_type;
+wire [2:0] ing_type;
+wire [1:0] t_value;
+wire on_temp;
+wire start_timer;
 
 
 Debouncer coffee(
@@ -118,14 +121,36 @@ Contador monedero(
 		.total(total)
 );
 
-	
-	
+
+clock_divisor clk_1Hz(
+	.clk_100MHz(clk),
+	.clk_1Hz(led[2]),
+	.on(on_temp)
+ );
+ 
+TimeSelector time_select(
+	.clk(clk),
+	.ing_type(ing_type),
+	.t_value(t_value)
+ );
+ 
+ temporizador temp(
+	.clk_100MHz(clk),
+	.value(t_value),
+	.start_timer(start_timer),
+	.t_expired(led[0]),	
+	.on(on_temp)
+);
+
+
+assign led[1] = start_timer;
 FSM fsm(
 		.clk(clk),
 		.ok(ok),
-		.t_expired(expired),
-		.reset(reset_wire),
-		.ingredientes(led[7:3])
+		.t_expired(reset_wire),
+		.reset(expired),
+		.ingredientes(led[7:3]),
+		.start_timer(start_timer)
     );
 
 always@(posedge clk)

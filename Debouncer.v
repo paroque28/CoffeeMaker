@@ -24,8 +24,7 @@ module Debouncer(
 
     // from which we make three outputs, all synchronous to the clock
     output reg signal_state,  // 1 as long as the push-button is active (down)
-    output signal_down,  // 1 for one clock cycle when the push-button goes down (i.e. just pushed)
-    output signal_up   // 1 for one clock cycle when the push-button goes up (i.e. just released)
+    output signal_up   // 1 for one clock cycle when the push-button goes up (i.e. just pushed)
 );
 
 // First use two flip-flops to synchronize the signal signal the "clk" clock domain
@@ -50,6 +49,5 @@ begin
     if(signal_cnt_max) signal_state <= ~signal_state;  // if the counter is maxed out, signal changed!
 end
 
-assign signal_down = ~signal_idle & signal_cnt_max & ~signal_state;
 assign signal_up   = ~signal_idle & signal_cnt_max &  signal_state;
 endmodule

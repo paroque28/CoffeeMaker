@@ -20,29 +20,35 @@
 //////////////////////////////////////////////////////////////////////////////////
 module clock_divisor(
     input clk_100MHz,
-	 input on,
+	 input reset,
     output reg clk_1Hz 
     );
 	 
 
- reg[28:0] contador = 0; 
-	initial clk_1Hz = 0 ;
+reg[25:0] contador = 0;
+reg reset_last = 0;
+initial clk_1Hz = 0 ;
+
 always @(posedge clk_100MHz)
 begin
-	if (on)
+	if (reset && reset != reset_last)
 	begin
-		if(contador == 50000000)
+		contador = 0;
+		clk_1Hz = 0;
+		reset_last = reset;
+	end
+	else
+	begin
+		if(contador != 50000000)	
+		begin
+			contador = contador + 1 ; 
+		end
+		else
 		begin
 			contador = 0;
 			clk_1Hz = ~clk_1Hz; 
 		end
-		else
-			contador = contador + 1 ; 
-	end
-	else
-	begin
-		contador = 0;
-		clk_1Hz = 1;
+		reset_last = reset;
 	end
 end
 endmodule
