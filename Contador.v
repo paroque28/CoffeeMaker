@@ -30,8 +30,8 @@ module Contador(
 		if (reset) total <= 0 ;
 		else 
 		begin
-			if (one) total <= total + 1;
-			if (five) total <= total + 5;
+			if (one) total <= total + 1 ;
+			if (five) total <= total + 5 ;
 		end
 
 endmodule

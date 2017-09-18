@@ -23,13 +23,13 @@ module seven_segment(
     input [3:0] in,
     output [6:0] seg,
     output [3:0] an
-    );
+  );
 
 reg [16:0] contador = 0; 
 reg [1:0] an_select = 0;
-reg [3:0] x;
-reg [3:0] unidades;
-reg [1:0] decenas;
+reg [3:0] x = 0;
+reg [3:0] unidades = 0;
+reg decenas = 0;
 
 binto7seg toseg (
 		.clk(clk),
